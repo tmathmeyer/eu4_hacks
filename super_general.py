@@ -1,7 +1,7 @@
 
 import collections
 import struct
-from eu4_hack import pidutil
+from eu4_hacks import pidutil
 from impulse.args import args
 
 

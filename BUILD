@@ -10,3 +10,14 @@ py_binary(
     "//impulse/args:args",
   ]
 )
+
+py_binary(
+  name = "enable_console",
+  srcs = [
+    "enable_console.py",
+    "pidutil.py",
+  ],
+  deps = [
+    "//impulse/args:args",
+  ]
+)
