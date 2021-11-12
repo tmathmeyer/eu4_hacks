@@ -88,17 +88,24 @@ def change(name:str,
            maneuvre:str,
            siege:str,
            address:str=None,
-           dbg:bool=False):
+           dbg:bool=False,
+           maxout:bool=False):
   """Changes a general's stats given its name and current stats.
   
   Example: ./general change "Floris Twente" 2:5 0:1 1:4 0:999
   """
   SetDebug(dbg)
   debug(address)
-  fire = fire.split(':')
-  shock = shock.split(':')
-  maneuvre = maneuvre.split(':')
-  siege = siege.split(':')
+  if maxout:
+    fire = [fire, '9999']
+    shock = [shock, '9999']
+    maneuvre = [maneuvre, '9999']
+    siege = [siege, '9999']
+  else:
+    fire = fire.split(':')
+    shock = shock.split(':')
+    maneuvre = maneuvre.split(':')
+    siege = siege.split(':')
   bytepack = pack(fire[0], shock[0], maneuvre[0], siege[0])
   newpack = pack(fire[1], shock[1], maneuvre[1], siege[1])
   pid = pidutil.GetProcessByName('eu4')
