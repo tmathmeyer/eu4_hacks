@@ -1,23 +1,19 @@
 langs("Python")
 
-py_binary(
+py_binary (
   name = "super_general",
   srcs = [
-    "super_general.py",
     "pidutil.py",
+    "super_general.py",
   ],
-  deps = [
-    "//impulse/args:args",
-  ]
+  deps = [ "//impulse/args:args" ],
 )
 
-py_binary(
+py_binary (
   name = "enable_console",
   srcs = [
     "enable_console.py",
     "pidutil.py",
   ],
-  deps = [
-    "//impulse/args:args",
-  ]
+  deps = [ "//impulse/args:args" ],
 )
