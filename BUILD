@@ -15,5 +15,11 @@ py_binary (
     "enable_console.py",
     "pidutil.py",
   ],
-  deps = [ "//impulse/args:args" ],
+  deps = [
+    "//impulse/args:args",
+    "//impulse/util:bintools",
+  ],
+  data = [
+    "skip_ironman_checks.gdb",
+  ],
 )

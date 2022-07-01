@@ -19,7 +19,7 @@ def debug(str):
     print(str)
 
 
-def find_general_name(tok, proc, maps):
+def find_general_name(tok, proc, maps, lookback):
   print('scanning memory for general name')
   general = collections.namedtuple('General', ['region', 'address'])
   for region in maps:
@@ -28,13 +28,14 @@ def find_general_name(tok, proc, maps):
       index = data.find(tok)
       if index != -1:
         debug(f'found string at index: {index + addr} ({index})')
-        yield general(region, index+addr)
+        yield general(region, index+addr-lookback)
 
 
-def find_potential_general_struct(tok, proc, maps):
+def find_potential_general_struct(tok, proc, maps, lookback):
   generals = [
-    struct.pack('<Q', g.address) for g in find_general_name(tok, proc, maps)]
-  print('rescanning memory for general structures')
+    struct.pack('<Q', g.address) for g in find_general_name(
+      tok, proc, maps, lookback)]
+  print(f'rescanning memory for {len(generals)} general structures')
   for region in maps:
     debug(f'scanning region {region.start_str} (len: {region.length})')
     for addr, data in proc.read(region.start, region.length, 1024):
@@ -45,8 +46,8 @@ def find_potential_general_struct(tok, proc, maps):
           yield addr + index
 
 
-def find_general_struct(name, stats, proc, maps):
-  for idx in find_potential_general_struct(name, proc, maps):
+def find_general_struct(name, stats, proc, maps, lookback):
+  for idx in find_potential_general_struct(name, proc, maps, lookback):
     for addr, data in proc.read(idx, 512, 512):
       index = data.find(stats)
       if index != -1:
@@ -68,6 +69,7 @@ def find(name:str,
          shock:int,
          maneuvre:int,
          siege:int,
+         lookback:int=0,
          dbg:bool=False):
   """Finds a general's stats memory address given name and stats."""
   SetDebug(dbg)
@@ -77,7 +79,7 @@ def find(name:str,
   print(f'Got {len(maps)} valid regions')
   with pidutil.Ptrace(pid) as proc:
     namebytes = bytes(name, encoding='utf8')
-    addr = find_general_struct(namebytes, bytepack, proc, maps)
+    addr = find_general_struct(namebytes, bytepack, proc, maps, lookback)
     print(f'General {name} stats addr = {hex(addr)}')
 
 
@@ -89,6 +91,7 @@ def change(name:str,
            siege:str,
            address:str=None,
            dbg:bool=False,
+           lookback:int=0,
            maxout:bool=False):
   """Changes a general's stats given its name and current stats.
   
@@ -115,7 +118,7 @@ def change(name:str,
   with pidutil.Ptrace(pid) as proc:
     if address is None:
       namebytes = bytes(name, encoding='utf8')
-      addr = find_general_struct(namebytes, bytepack, proc, maps)
+      addr = find_general_struct(namebytes, bytepack, proc, maps, lookback)
       print(f'General {name} stats addr = {hex(addr)}')
     else:
       addr = int(address, 16)

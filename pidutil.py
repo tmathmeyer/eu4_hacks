@@ -42,7 +42,11 @@ def GetValidProcessMaps(pid:int) -> []:
       continue
     region, perms, offset, dec, inode, *pathname = line.split()
     if inode != '0' or (pathname and pathname[0] != '[heap]'):
-      continue
+      if not (pathname and pathname[-1].endswith('eu4')):
+        continue
+      print(region)
+      print(region.split('-'))
+      print(perms)
     if perms[0] != 'r' or perms[1] != 'w':
       continue
     start, end = region.split('-')
