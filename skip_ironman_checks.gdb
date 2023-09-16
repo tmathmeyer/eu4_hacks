@@ -1,14 +1,14 @@
 
-break *0x02473914
+break *0x0257762c
   commands
   silent
-  jump *0x0247393c
+  jump *0x2577639
   continue
 end
 
-break *0x02473b2a
+break *0x02577417
   commands
   silent
-  jump *0x02473b39
+  jump *0x257743c
   continue
 end
