@@ -19,7 +19,5 @@ py_binary (
     "//impulse/args:args",
     "//impulse/util:bintools",
   ],
-  data = [
-    "skip_ironman_checks.gdb",
-  ],
+  data = [ "skip_ironman_checks.gdb" ],
 )
